@@ -1,6 +1,6 @@
 [meta]
-  title = "Text-to-Speech Flask Starter"
-  description = "This example app demonstrates how to use the Deepgram Text-to-Speech API with Python using Flask, a micro web framework for Python"
+  title = "Flask Text-to-Speech Starter"
+  description = "Get started using Deepgram's Text-to-Speech with this Flask demo app"
   author = "Deepgram DX Team <devrel@deepgram.com> (https://developers.deepgram.com)"
   useCase = "TTS"
   language = "Python"
