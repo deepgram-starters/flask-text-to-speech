@@ -1,5 +1,7 @@
 # Flask Text-to-Speech Starter
 
+[![Discord](https://dcbadge.vercel.app/api/server/xWRaCDBtW4?style=flat)](https://discord.gg/xWRaCDBtW4)
+
 This example app demonstrates how to use the Deepgram Text-to-Speech API with Python using Flask, a micro web framework for Python.
 
 <img src="/static/assets/preview-starter.png" alt="A preview of the app" style="width: 400px; height: auto; border-radius: 10px; margin-top: 20px;">
