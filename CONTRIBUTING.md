@@ -76,14 +76,14 @@ Please follow these steps:
 3. Test both backend and frontend changes:
    ```bash
    # Test backend
-   flask run -p 3000
+   python app.py
 
    # Rebuild frontend if modified
    cd frontend && pnpm run build && cd ..
    ```
 4. Ensure all [status checks](https://help.github.com/articles/about-status-checks/) pass before review
    - All dependencies should be pinned to exact versions
-   - Test the `/stt/transcribe` endpoint matches the API contract
+   - Test the `/tts/synthesize` endpoint matches the API contract
 
 Note: Reviewers may request additional changes before merging.
 

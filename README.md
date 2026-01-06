@@ -1,6 +1,6 @@
 # Flask Text-to-Speech Starter
 
-Text-to-Speech demo using Deepgram's API with Python Flask backend and web frontend.
+Text-to-Speech demo using Deepgram's Speak API with Python Flask backend and web frontend.
 
 ## Prerequisites
 
@@ -57,17 +57,28 @@ cd frontend && pnpm run dev
 
 Open [http://localhost:5173](http://localhost:5173)
 
+
 ## Features
 
-- Enter text to convert to audio
-- Multiple model options
-- View text-to-speech history
+This application:
+
+- Accepts text input via REST API
+- Synthesizes speech using Deepgram's Aura voices
+- Returns raw audio bytes for playback
+- Supports multiple voice models
 
 ## How It Works
 
-- **Backend** (`server.js`): Node.js/Express server implementing the `/tts/synthesize` endpoint
-- **Frontend** (`frontend/`): Vite-powered web UI for audio upload and transcription display
-- **API**: Integrates with [Deepgram's Speech-Text-to-Speech API](https://developers.deepgram.com/)
+- **Backend** (`app.py`): Flask server implementing the `/tts/synthesize` endpoint per the TTS API contract
+- **Frontend** (`frontend/`): Vite-powered web UI built with Deepgram design system
+- **API**: Integrates with [Deepgram's Text-to-Speech API](https://developers.deepgram.com/docs/tts)
+
+The frontend is built with Vite and served as static files from `frontend/dist/`. This ensures a consistent UI across all Deepgram starter apps regardless of backend language.
+
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for security reporting procedures.
 
 ## Getting Help
 
@@ -85,9 +96,6 @@ See our [Contributing Guidelines](./CONTRIBUTING.md) to learn about contributing
 
 This project follows the Deepgram [Code of Conduct](./CODE_OF_CONDUCT.md)
 
-## Security
-
-For security policy and procedures, see our [Security Policy](./SECURITY.md)
 
 ## License
 
