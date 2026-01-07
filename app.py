@@ -12,7 +12,7 @@ Key Features:
 """
 
 import os
-from flask import Flask, request, Response, make_response
+from flask import Flask, request, make_response
 from flask_cors import CORS
 from deepgram import DeepgramClient
 from dotenv import load_dotenv
@@ -128,18 +128,31 @@ def synthesize_speech():
         # Get model from query parameters
         model = request.args.get('model', DEFAULT_MODEL)
 
+        # Validate text length
+        if len(text) > 2000:
+            return json_abort(
+                400,
+                'TEXT_TOO_LONG',
+                'Text exceeds maximum length of 2000 characters',
+                request_id
+            )
+
         # Initialize Deepgram client
         client = DeepgramClient(api_key=API_KEY)
 
         # Generate speech using Deepgram Speak API v1
-        # This streams the audio data directly without saving to file
-        response = client.speak.v1.stream_raw(
-            {"text": text},
+        # This returns an iterator of audio bytes
+        audio_generator = client.speak.v1.audio.generate(
+            text=text,
             model=model
         )
 
+        # Convert the iterator to bytes for the response
+        # The generator yields chunks of audio data
+        audio_bytes = b''.join(audio_generator)
+
         # Return audio bytes with appropriate headers
-        flask_response = make_response(response.stream)
+        flask_response = make_response(audio_bytes)
         flask_response.headers['Content-Type'] = 'application/octet-stream'
 
         # Echo back X-Request-Id if provided
@@ -148,8 +161,29 @@ def synthesize_speech():
 
         return flask_response
 
+    except ValueError as ve:
+        # Handle validation errors (like our text length check)
+        print(f"Validation error: {ve}")
+        return json_abort(
+            400,
+            'INVALID_REQUEST',
+            str(ve),
+            request_id
+        )
     except Exception as e:
+        # Handle any other errors from Deepgram or processing
         print(f"Error synthesizing speech: {e}")
+        error_message = str(e)
+
+        # Check if it's a Deepgram API error about text length
+        if 'too long' in error_message.lower() or 'length' in error_message.lower():
+            return json_abort(
+                400,
+                'TEXT_TOO_LONG',
+                'Text exceeds maximum allowed length',
+                request_id
+            )
+
         return json_abort(
             500,
             'SYNTHESIS_FAILED',

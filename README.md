@@ -1,6 +1,6 @@
 # Flask Text-to-Speech Starter
 
-Text-to-Speech demo using Deepgram's Speak API with Python Flask backend and web frontend.
+Text-to-Speech demo using Deepgram's API with Python Flask backend and web frontend.
 
 ## Prerequisites
 
@@ -60,12 +60,9 @@ Open [http://localhost:5173](http://localhost:5173)
 
 ## Features
 
-This application:
-
-- Accepts text input via REST API
-- Synthesizes speech using Deepgram's Aura voices
-- Returns raw audio bytes for playback
-- Supports multiple voice models
+- Enter text to convert to audio
+- Multiple model options
+- View text-to-speech history
 
 ## How It Works
 
