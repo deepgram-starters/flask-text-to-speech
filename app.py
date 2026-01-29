@@ -26,7 +26,7 @@ load_dotenv(override=False)
 
 # Default TTS model to use when none is specified
 DEFAULT_MODEL = "aura-2-thalia-en"
-DEFAULT_PORT = 3000
+DEFAULT_PORT = 8080
 
 # ============================================================================
 # API KEY VALIDATION
