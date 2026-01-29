@@ -225,6 +225,45 @@ def json_abort(status_code, error_code, message, request_id=''):
 
     return flask_response
 
+@app.route("/api/metadata", methods=["GET"])
+def get_metadata():
+    """
+    GET /api/metadata
+
+    Returns metadata about this starter application from deepgram.toml
+    Required for standardization compliance
+    """
+    try:
+        import toml
+        with open('deepgram.toml', 'r') as f:
+            config = toml.load(f)
+
+        if 'meta' not in config:
+            return json_abort(
+                500,
+                'INTERNAL_SERVER_ERROR',
+                'Missing [meta] section in deepgram.toml'
+            )
+
+        response = make_response(config['meta'], 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    except FileNotFoundError:
+        return json_abort(
+            500,
+            'INTERNAL_SERVER_ERROR',
+            'deepgram.toml file not found'
+        )
+
+    except Exception as e:
+        print(f"Error reading metadata: {e}")
+        return json_abort(
+            500,
+            'INTERNAL_SERVER_ERROR',
+            f'Failed to read metadata from deepgram.toml: {str(e)}'
+        )
+
 # ============================================================================
 # SERVER START
 # ============================================================================
