@@ -171,17 +171,6 @@ def synthesize_speech():
     except Exception as e:
         # Handle any other errors from Deepgram or processing
         print(f"Error synthesizing speech: {e}")
-        error_message = str(e)
-
-        # Check if it's a Deepgram API error about text length
-        if 'too long' in error_message.lower() or 'length' in error_message.lower():
-            return json_abort(
-                400,
-                'TEXT_TOO_LONG',
-                'Text exceeds maximum allowed length',
-                request_id
-            )
-
         return json_abort(
             500,
             'SYNTHESIS_FAILED',
