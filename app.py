@@ -72,7 +72,7 @@ app = Flask(__name__)
 CORS(app, origins=[
     f"http://localhost:{CONFIG['frontend_port']}",
     f"http://127.0.0.1:{CONFIG['frontend_port']}"
-], supports_credentials=True, expose_headers=["X-Request-Id"], allow_headers=["Content-Type", "X-Request-Id"])
+], supports_credentials=True)
 
 # ============================================================================
 # ROUTES
@@ -91,24 +91,17 @@ def synthesize_speech():
     Query Parameters:
         model: TTS model (optional, default: aura-2-apollo-en)
 
-    Headers:
-        X-Request-Id: Request identifier for tracing (optional)
-
     Returns:
         200: Binary audio data (application/octet-stream)
         4XX: Error response (application/json)
     """
-    # Get X-Request-Id header for tracing
-    request_id = request.headers.get('X-Request-Id', '')
-
     try:
         # Parse JSON request body
         if not request.is_json:
             return json_abort(
                 400,
                 'INVALID_REQUEST',
-                'Request body must be JSON',
-                request_id
+                'Request body must be JSON'
             )
 
         data = request.get_json()
@@ -119,8 +112,7 @@ def synthesize_speech():
             return json_abort(
                 400,
                 'INVALID_REQUEST',
-                'Text field is required and cannot be empty',
-                request_id
+                'Text field is required and cannot be empty'
             )
 
         # Get model from query parameters
@@ -131,8 +123,7 @@ def synthesize_speech():
             return json_abort(
                 400,
                 'TEXT_TOO_LONG',
-                'Text exceeds maximum length of 2000 characters',
-                request_id
+                'Text exceeds maximum length of 2000 characters'
             )
 
         # Initialize Deepgram client
@@ -153,10 +144,6 @@ def synthesize_speech():
         flask_response = make_response(audio_bytes)
         flask_response.headers['Content-Type'] = 'application/octet-stream'
 
-        # Echo back X-Request-Id if provided
-        if request_id:
-            flask_response.headers['X-Request-Id'] = request_id
-
         return flask_response
 
     except ValueError as ve:
@@ -165,8 +152,7 @@ def synthesize_speech():
         return json_abort(
             400,
             'INVALID_REQUEST',
-            str(ve),
-            request_id
+            str(ve)
         )
     except Exception as e:
         # Handle any other errors from Deepgram or processing
@@ -174,15 +160,14 @@ def synthesize_speech():
         return json_abort(
             500,
             'SYNTHESIS_FAILED',
-            'Failed to synthesize speech',
-            request_id
+            'Failed to synthesize speech'
         )
 
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
 
-def json_abort(status_code, error_code, message, request_id=''):
+def json_abort(status_code, error_code, message):
     """
     Return a JSON error response following the TTS contract
 
@@ -190,7 +175,6 @@ def json_abort(status_code, error_code, message, request_id=''):
         status_code: HTTP status code
         error_code: Error code from the contract
         message: Human-readable error message
-        request_id: Request ID for tracing
 
     Returns:
         Flask Response with JSON error body
@@ -205,10 +189,6 @@ def json_abort(status_code, error_code, message, request_id=''):
 
     flask_response = make_response(response_data, status_code)
     flask_response.headers['Content-Type'] = 'application/json'
-
-    # Echo back X-Request-Id if provided
-    if request_id:
-        flask_response.headers['X-Request-Id'] = request_id
 
     return flask_response
 
