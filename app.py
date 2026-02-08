@@ -5,7 +5,7 @@ This Flask server provides a REST API endpoint for text-to-speech synthesis
 powered by Deepgram's Speak API. It returns binary audio data directly.
 
 Key Features:
-- POST endpoint: /tts/synthesize
+- POST endpoint: /api/text-to-speech
 - Accepts JSON text input
 - Returns raw audio bytes (application/octet-stream)
 - Serves built frontend from frontend/dist/
@@ -31,7 +31,6 @@ DEFAULT_MODEL = "aura-2-thalia-en"
 CONFIG = {
     "port": int(os.environ.get("PORT", 8081)),
     "host": os.environ.get("HOST", "0.0.0.0"),
-    "frontend_port": int(os.environ.get("FRONTEND_PORT", 8080)),
 }
 
 # ============================================================================
@@ -68,17 +67,13 @@ API_KEY = validate_api_key()
 app = Flask(__name__)
 
 # Enable CORS for frontend communication
-# Frontend runs on port 8080, backend on port 8081
-CORS(app, origins=[
-    f"http://localhost:{CONFIG['frontend_port']}",
-    f"http://127.0.0.1:{CONFIG['frontend_port']}"
-], supports_credentials=True)
+CORS(app)
 
 # ============================================================================
 # ROUTES
 # ============================================================================
 
-@app.route("/tts/synthesize", methods=["POST"])
+@app.route("/api/text-to-speech", methods=["POST"])
 def synthesize_speech():
     """
     Synthesize text to speech and return audio bytes
@@ -238,16 +233,17 @@ def get_metadata():
 if __name__ == "__main__":
     port = CONFIG["port"]
     host = CONFIG["host"]
-    frontend_port = CONFIG["frontend_port"]
     debug = os.environ.get("FLASK_DEBUG", "0") == "1"
 
     print("\n" + "=" * 70)
     print(f"🚀 Flask Text To Speech Server (Backend API)")
     print("=" * 70)
     print(f"Backend:  http://localhost:{port}")
-    print(f"Frontend: http://localhost:{frontend_port}")
-    print(f"CORS:     Enabled for frontend port {frontend_port}")
+    print(f"CORS:     Enabled")
     print(f"Debug:    {'ON' if debug else 'OFF'}")
+    print("")
+    print("📡 POST /api/text-to-speech")
+    print("📡 GET  /api/metadata")
     print("=" * 70 + "\n")
 
     # Run Flask app
