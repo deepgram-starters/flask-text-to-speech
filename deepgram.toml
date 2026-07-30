@@ -6,7 +6,7 @@ repository = "https://github.com/deepgram-starters/flask-text-to-speech"
 useCase = "text-to-speech"
 language = "python"
 framework = "flask"
-sdk = "6.0.0-rc.1"
+sdk = "deepgram-sdk"
 tags = ["text-to-speech", "tts", "speech-synthesis", "python", "flask"]
 
 # Check prerequisites
